@@ -94,3 +94,11 @@ mqtt_iot_weather_station/
 - **I2C Driver Warning**: Upgraded from the deprecated `driver/i2c.h` to `driver/i2c_master.h`, improving I2C reliability.
 - **Low-Power Design**: Implemented deep sleep in `main.c` and `bme280_task.c`, reducing power consumption from ~100mA to ~20µA during sleep.
 - **Undefined Symbols and Missing Macros**: I2C_MASTER_WRITE was reported as undefined — indicating a missing or improperly configured I2C master setup in ESP-IDF.
+
+## Hardware Setup
+![BME280 Wiring Setup](https://github.com/user-attachments/assets/1b668e4e-f75b-4afb-9acd-7b97b475de56)
+
+## MQTT Explorer Output
+![image](https://github.com/user-attachments/assets/155ca169-1bc4-48a3-bc0a-ce620d558eba
+
+
