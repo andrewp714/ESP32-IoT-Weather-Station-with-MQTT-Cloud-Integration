@@ -5,8 +5,8 @@
 #include "esp_log.h"         // Logging functions for debugging and status output
 
 // Define Wi-Fi credentials as macros for easy configuration
-#define WIFI_SSID "Frontier8816"    // Wi-Fi network name (SSID)
-#define WIFI_PASS "0734600078"      // Wi-Fi password
+#define WIFI_SSID "YOUR_SSID"    // Wi-Fi network name (SSID)
+#define WIFI_PASS "YOUR_PASSWORD"      // Wi-Fi password
 
 // Event handler function to manage Wi-Fi and IP-related events
 static void wifi_event_handler(void *arg, esp_event_base_t event_base,
