@@ -88,9 +88,9 @@ mqtt_iot_weather_station/
      ```
 
 ## Technical Challenges Overcome
-- **BME280 Initialization Crash**: Resolved a crash in `bme280_init` (backtrace at `bme280.c:429`) by migrating to the new I2C driver (`driver/i2c_master.h`) and verifying the BME280 address (`0x76`) with an I2C scanner.
+- **BME280 Initialization Failure**: Resolved a "BME280 initialization failed: -1" error, when intf_ptr, read, write, and delay_ms were checked to not be NULL, but the problem persisted. A broken version of the Bosch BME280 driver is suspected to be used and fixed by correcting the delay_ms function in bme280.c file.
 - **FreeRTOS Configuration**: Fixed the `CONFIG_FREERTOS_HZ` undefined error in `bme280_task.c` by including `<freertos/FreeRTOS.h>` and using `pdMS_TO_TICKS` for timing.
-- **SPI Flash Warning**: Corrected a flash size mismatch (4MB vs. 2MB) by setting `CONFIG_ESPTOOLPY_FLASHSIZE_4MB` in `sdkconfig`.
+- **Guru Meditation Error**: A Guru Meditation Error: Core 1 panic'ed (InstrFetchProhibited) was triggered, which usually points to trying to execute a NULL or invalid function pointer.
 - **I2C Driver Warning**: Upgraded from the deprecated `driver/i2c.h` to `driver/i2c_master.h`, improving I2C reliability.
 - **Low-Power Design**: Implemented deep sleep in `main.c` and `bme280_task.c`, reducing power consumption from ~100mA to ~20µA during sleep.
-- **MQTT Validation**: Ensured MQTT Explorer displays one JSON message per 60-second cycle, troubleshooting retained messages and Wi-Fi/M
+- **Undefined Symbols and Missing Macros**: I2C_MASTER_WRITE was reported as undefined — indicating a missing or improperly configured I2C master setup in ESP-IDF.
