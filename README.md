@@ -99,6 +99,5 @@ mqtt_iot_weather_station/
 ![BME280 Wiring Setup](https://github.com/user-attachments/assets/1b668e4e-f75b-4afb-9acd-7b97b475de56)
 
 ## MQTT Explorer Output
-![image](https://github.com/user-attachments/assets/155ca169-1bc4-48a3-bc0a-ce620d558eba
-
+![image](https://github.com/user-attachments/assets/155ca169-1bc4-48a3-bc0a-ce620d558eba)
 
