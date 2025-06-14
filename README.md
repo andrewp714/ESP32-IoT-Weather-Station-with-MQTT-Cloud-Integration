@@ -84,7 +84,7 @@ mqtt_iot_weather_station/
    - Subscribe to the `weather/data` topic.
    - Expect one JSON message every 60 seconds, e.g.:
      ```json
-     {"temperature":25.50 C,"humidity":60.20 %,"pressure":1013.25 hPa}
+     {"temperature":25.50,"humidity":60.20,"pressure":1013.25}
      ```
 
 ## Technical Challenges Overcome
