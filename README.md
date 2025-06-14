@@ -1,28 +1,96 @@
 # ESP32-IoT-Weather-Station-with-MQTT-Cloud-Integration
 
-IoT Weather Station (ESP32 + BME280)
-This project demonstrates a complete IoT weather station using an ESP32 microcontroller and a BME280 environmental sensor. Sensor data (temperature, humidity, and pressure) is read at regular intervals and transmitted to a cloud server over Wi-Fi using MQTT or HTTP protocols.
+## Overview
+This project implements a low-power IoT weather station using the ESP32 microcontroller and Bosch BME280 sensor, developed with the ESP-IDF framework. The system collects temperature, humidity, and pressure data, publishes it to an MQTT broker (`broker.hivemq.com`) every 60 seconds, and enters deep sleep to minimize power consumption. Data is visualized using MQTT Explorer, making it ideal for real-time environmental monitoring. The project demonstrates advanced embedded systems skills, including FreeRTOS task management, I2C communication, MQTT protocol integration, and low-power design.
 
-✨ Features
-Sensor data acquisition via I2C using Bosch’s bme280_driver
+## Features
+- **Sensor Integration**: Reads temperature, humidity, and pressure from the BME280 sensor via I2C.
+- **MQTT Communication**: Publishes JSON-formatted data (`{\"Temperature\":\"%.2f C\",\"Humidity\":\"%.2f %%\",\"Pressure\":\"%.2f hPa\"}`) to the `weather/data` topic.
+- **Low-Power Operation**: Utilizes ESP32 deep sleep to reduce power consumption to ~20µA between 60-second data cycles.
+- **Wi-Fi Connectivity**: Connects to a Wi-Fi network for MQTT communication.
+- **Error Handling**: Robust initialization and logging for Wi-Fi, MQTT, and BME280 operations.
+- **Modular Design**: Organized into `main.c`, `wifi.c`, `mqtt.c`, and `bme280_task.c` for maintainability.
 
-MQTT publishing to broker (e.g., Mosquitto) or HTTP POST to REST API
+## Hardware Requirements
+- ESP32 development board (e.g., ESP32-WROOM-32 with 4MB flash).
+- Bosch BME280 sensor module.
+- Breadboard and jumper wires for connections:
+  - BME280 VCC to ESP32 3.3V
+  - BME280 GND to ESP32 GND
+  - BME280 SDA to ESP32 GPIO 21
+  - BME280 SCL to ESP32 GPIO 22
 
-JSON-formatted data packets with timestamp
+## Software Requirements
+- **ESP-IDF v5.4.1**: Framework for ESP32 development.
+- **Visual Studio Code**: With ESP-IDF extension for building and flashing.
+- **MQTT Explorer**: For visualizing MQTT data.
+- **Bosch BME280 Driver**: Included in `components/bme280_driver`.
 
-TLS-secured communication (MQTTS/HTTPS)
+## Project Structure
+```
+mqtt_iot_weather_station/
+├── main/
+│   ├── main.c              # Entry point, initializes tasks and deep sleep
+│   ├── wifi.c              # Wi-Fi connection setup
+│   ├── wifi.h
+│   ├── mqtt.c              # MQTT client configuration and publishing
+│   ├── mqtt.h
+│   ├── bme280_task.c       # BME280 sensor reading and MQTT publishing
+│   ├── bme280_task.h
+│   ├── CMakeLists.txt
+├── components/
+│   ├── bme280_driver/
+│   │   ├── bme280.c        # Bosch BME280 driver
+│   │   ├── bme280.h
+│   │   ├── CMakeLists.txt
+├── CMakeLists.txt          # Root CMake configuration
+├── sdkconfig               # ESP-IDF configuration
+├── README.md               # This file
+```
 
-OTA firmware updates support (optional)
+## Setup Instructions
+1. **Clone the Repository**:
+   ```bash
+   git clone https://github.com/yourusername/mqtt_iot_weather_station.git
+   cd mqtt_iot_weather_station
+   ```
 
-FreeRTOS-based task scheduling
+2. **Install ESP-IDF**:
+   - Follow the [ESP-IDF Getting Started Guide](https://docs.espressif.com/projects/esp-idf/en/v5.4.1/esp32/get-started/index.html) to install ESP-IDF v5.4.1.
+   - Set up the environment:
+     ```bash
+     . $HOME/esp/v5.4.1/esp-idf/export.sh  # Linux/macOS
+     C:\Users\andre\esp\v5.4.1\export.bat   # Windows
+     ```
 
-🧰 Tech Stack
-ESP-IDF v5.x or Arduino-ESP32
+3. **Configure Wi-Fi and MQTT**:
+   - Edit `wifi.c` to set your Wi-Fi credentials:
+     ```c
+     .ssid = "YOUR_SSID",
+     .password = "YOUR_PASSWORD",
+     ```
+   - The default MQTT broker is `mqtt://broker.hivemq.com:1883`. Update `mqtt.c` if using a local broker (e.g., Mosquitto).
 
-BME280 sensor
+4. **Build and Flash**:
+   - Connect the ESP32 to your computer via USB.
+   - Build and flash the project:
+     ```bash
+     idf.py build flash monitor
+     ```
 
-MQTT (via esp-mqtt) or HTTP (via esp_http_client)
+5. **Verify with MQTT Explorer**:
+   - Download and install [MQTT Explorer](https://mqtt-explorer.com/).
+   - Connect to `mqtt://broker.hivemq.com:1883`.
+   - Subscribe to the `weather/data` topic.
+   - Expect one JSON message every 60 seconds, e.g.:
+     ```json
+     {"temperature":25.50,"humidity":60.20,"pressure":1013.25}
+     ```
 
-FreeRTOS
-
-(Optional) Node-RED / ThingsBoard / Grafana for visualization
+## Technical Challenges Overcome
+- **BME280 Initialization Crash**: Resolved a crash in `bme280_init` (backtrace at `bme280.c:429`) by migrating to the new I2C driver (`driver/i2c_master.h`) and verifying the BME280 address (`0x76`) with an I2C scanner.
+- **FreeRTOS Configuration**: Fixed the `CONFIG_FREERTOS_HZ` undefined error in `bme280_task.c` by including `<freertos/FreeRTOS.h>` and using `pdMS_TO_TICKS` for timing.
+- **SPI Flash Warning**: Corrected a flash size mismatch (4MB vs. 2MB) by setting `CONFIG_ESPTOOLPY_FLASHSIZE_4MB` in `sdkconfig`.
+- **I2C Driver Warning**: Upgraded from the deprecated `driver/i2c.h` to `driver/i2c_master.h`, improving I2C reliability.
+- **Low-Power Design**: Implemented deep sleep in `main.c` and `bme280_task.c`, reducing power consumption from ~100mA to ~20µA during sleep.
+- **MQTT Validation**: Ensured MQTT Explorer displays one JSON message per 60-second cycle, troubleshooting retained messages and Wi-Fi/M
