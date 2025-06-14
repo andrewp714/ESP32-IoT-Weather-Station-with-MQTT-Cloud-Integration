@@ -84,11 +84,11 @@ mqtt_iot_weather_station/
    - Subscribe to the `weather/data` topic.
    - Expect one JSON message every 60 seconds, e.g.:
      ```json
-     {"temperature":25.50,"humidity":60.20,"pressure":1013.25}
+     {"temperature":25.50 C,"humidity":60.20 %,"pressure":1013.25 hPa}
      ```
 
 ## Technical Challenges Overcome
-- **BME280 Initialization Failure**: Resolved a "BME280 initialization failed: -1" error, when intf_ptr, read, write, and delay_ms were checked to not be NULL, but the problem persisted. A broken version of the Bosch BME280 driver is suspected to be used and fixed by correcting the delay_ms function in bme280.c file.
+- **BME280 Initialization Failure**: Resolved a "BME280 initialization failed: -1" error, when intf_ptr, read, write, and delay_ms were checked to not be NULL, but the problem persisted. A broken version of the Bosch BME280 driver was suspected to be used and fixed by correcting the delay_ms function in bme280.c file.
 - **FreeRTOS Configuration**: Fixed the `CONFIG_FREERTOS_HZ` undefined error in `bme280_task.c` by including `<freertos/FreeRTOS.h>` and using `pdMS_TO_TICKS` for timing.
 - **Guru Meditation Error**: A Guru Meditation Error: Core 1 panic'ed (InstrFetchProhibited) was triggered, which usually points to trying to execute a NULL or invalid function pointer.
 - **I2C Driver Warning**: Upgraded from the deprecated `driver/i2c.h` to `driver/i2c_master.h`, improving I2C reliability.
